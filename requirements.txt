@@ -1,7 +1,7 @@
 streamlit
-openai-whisper
 torch
+openai-whisper
+ffmpeg-python
 numpy==1.23.0
 llvmlite==0.39.1
 numba==0.56.4
-ffmpeg-python
