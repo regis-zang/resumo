@@ -1,6 +1,6 @@
 streamlit
-torch==2.0.1
 openai-whisper
+torch==2.6.0
 ffmpeg-python
 numpy==1.23.0
 llvmlite==0.39.1
