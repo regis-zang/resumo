@@ -1,6 +1,5 @@
-pip install --upgrade pip setuptools wheel
 streamlit
-torch
+torch==2.0.1
 openai-whisper
 ffmpeg-python
 numpy==1.23.0
