@@ -4,18 +4,18 @@ import whisper
 import tempfile
 import soundfile as sf
 
-# Certifica que o ffmpeg está no caminho do sistema
+# Adiciona ffmpeg ao caminho do sistema
 os.environ["PATH"] += os.pathsep + "/usr/bin"
 
 def transcribe_audio(audio_file):
     model = whisper.load_model("base")
 
-    # Salva o arquivo temporariamente
+    # Salvar o arquivo temporariamente
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
         temp_file.write(audio_file.read())
         temp_filename = temp_file.name
 
-    # Transcreve o áudio
+    # Transcrever áudio
     result = model.transcribe(temp_filename)
     os.remove(temp_filename)
 
