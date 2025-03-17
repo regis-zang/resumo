@@ -1,28 +1,41 @@
 import os
 import streamlit as st
-import whisper
-import tempfile
+import vosk
 import soundfile as sf
+import json
+import tempfile
 
-# Adiciona ffmpeg ao caminho do sistema
-os.environ["PATH"] += os.pathsep + "/usr/bin"
+# Baixar e carregar o modelo Vosk
+MODEL_PATH = "model"  # Substitua pelo caminho correto do modelo
+if not os.path.exists(MODEL_PATH):
+    st.error("O modelo Vosk não foi encontrado! Baixe um modelo de https://alphacephei.com/vosk/models e extraia para a pasta 'model'.")
+
+# Inicializa o modelo de reconhecimento de voz
+model = vosk.Model(MODEL_PATH)
 
 def transcribe_audio(audio_file):
-    model = whisper.load_model("base")
-
-    # Salvar o arquivo temporariamente
+    # Salvar temporariamente o arquivo
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
         temp_file.write(audio_file.read())
         temp_filename = temp_file.name
 
-    # Transcrever áudio
-    result = model.transcribe(temp_filename)
+    # Ler o áudio
+    wf, sr = sf.read(temp_filename)
+
+    # Criar reconhecedor de áudio
+    rec = vosk.KaldiRecognizer(model, sr)
+
+    # Processar o áudio
+    for chunk in wf:
+        rec.AcceptWaveform(chunk)
+
     os.remove(temp_filename)
 
-    return result["text"]
+    # Retornar a transcrição
+    return json.loads(rec.Result())["text"]
 
-# Interface do Streamlit
-st.title("Transcrição de Áudio para Texto")
+# Interface Streamlit
+st.title("Transcrição de Áudio para Texto (Vosk - Offline)")
 st.write("Faça o upload de um arquivo de áudio e veja a transcrição.")
 
 audio_file = st.file_uploader("Upload de áudio", type=["mp3", "wav", "m4a"])
